@@ -1,126 +1,144 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BrightLocal Email Signature Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; background: #fff; color: #1a1a1a; padding: 32px 24px; }
-    .wrap { max-width: 640px; margin: 0 auto; }
-    .header { margin-bottom: 28px; }
-    .header img { display: block; margin-bottom: 12px; }
+    body { font-family: 'Inter', Arial, sans-serif; color: #1a1a1a; min-height: 100vh; display: flex; }
+    .left { background: #fff; flex: 1; padding: 40px 32px; overflow-y: auto; }
+    .right { background: #DBF2FF; width: 340px; flex-shrink: 0; padding: 40px 32px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
     h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-    .subtitle { font-size: 13px; color: #444; }
+    .subtitle { font-size: 13px; color: #444; margin-bottom: 28px; }
     .divider { width: 100%; height: 1px; background: #e0e0e0; margin: 16px 0 20px; }
     .field { margin-bottom: 16px; }
-    label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
-    label .optional { font-weight: normal; font-size: 12px; color: #888; margin-left: 4px; }
-    input, select { width: 100%; padding: 9px 12px; font-size: 14px; font-family: Arial, sans-serif; border: 1px solid #e0e0e0; border-radius: 6px; outline: none; color: #1a1a1a; background: #fff; }
+    label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    label .optional { font-weight: 400; font-size: 12px; color: #888; margin-left: 4px; }
+    input, select { width: 100%; padding: 9px 12px; font-size: 14px; font-family: 'Inter', Arial, sans-serif; border: 1px solid #e0e0e0; border-radius: 6px; outline: none; color: #1a1a1a; background: #fff; }
     .hidden { display: none; }
     .preview-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-    .preview-header p { font-size: 14px; font-weight: 600; }
-    #copyBtn { background: #0FD03B; color: #fff; border: none; border-radius: 6px; padding: 9px 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
-    #copyBtn.copied { background: #aaa; }
+    .preview-label { font-size: 14px; font-weight: 700; }
+    .copy-btn { background: #0FD03B; color: #000; border: none; border-radius: 6px; padding: 9px 20px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Inter', Arial, sans-serif; }
+    .copy-btn.copied { background: #aaa; color: #000; }
     .preview-box { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background: #fff; }
     .hint { margin-top: 12px; font-size: 12px; color: #888; }
+    .right h2 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+    .step { display: flex; gap: 14px; margin-bottom: 20px; }
+    .step-num { width: 26px; height: 26px; border-radius: 50%; background: #00A6F4; color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .step-content p { font-size: 13px; line-height: 1.5; }
+    .tip { background: #fff; border-radius: 8px; padding: 12px 14px; margin-top: 24px; }
+    .tip p { font-size: 12px; color: #444; line-height: 1.5; }
+    @media (max-width: 800px) { body { flex-direction: column; } .right { width: 100%; height: auto; position: static; } }
   </style>
 </head>
 <body>
-<div class="wrap">
 
-  <div class="header">
-    <img src="https://144008104.fs1.hubspotusercontent-eu1.net/hubfs/144008104/Logos/BL%20Logos/BrightLocal-Logo-Green.png" alt="BrightLocal" height="28" style="margin-bottom: 16px;" />
+  <div class="left">
+    <img src="https://144008104.fs1.hubspotusercontent-eu1.net/hubfs/144008104/Logos/BL%20Logos/BrightLocal-Logo-Green.png" alt="BrightLocal" height="28" style="display:block;margin-bottom:16px;" />
     <h1>Email Signature Generator</h1>
     <p class="subtitle">Select your team and fill in your details to generate your signature.</p>
-  </div>
-
-  <!-- Team -->
-  <div class="field">
-    <label for="team">Team</label>
-    <select id="team" onchange="onTeamChange()">
-      <option value="">— Select your team —</option>
-      <option>Sales</option>
-      <option>Customer Success</option>
-      <option>Managed Listings</option>
-      <option>Local SEO Services</option>
-      <option>Support (with photo)</option>
-      <option>Support (without photo)</option>
-      <option>Marketing</option>
-      <option>People</option>
-      <option>Finance</option>
-      <option>Rev Ops</option>
-      <option>Dev Ops</option>
-      <option>SLT</option>
-    </select>
-  </div>
-
-  <div id="fields" class="hidden">
-    <div class="divider"></div>
 
     <div class="field">
-      <label for="name">Full name</label>
-      <input type="text" id="name" placeholder="Globey Globerson" oninput="updatePreview()" />
-    </div>
-
-    <div class="field">
-      <label for="pronouns">Pronouns <span class="optional">(optional)</span></label>
-      <input type="text" id="pronouns" placeholder="They/Them" oninput="updatePreview()" />
-    </div>
-
-    <div class="field">
-      <label for="jobTitle">Job title</label>
-      <input type="text" id="jobTitle" placeholder="Company Mascot" oninput="updatePreview()" />
-    </div>
-
-    <div class="field hidden" id="photoField">
-      <label for="photoUrl">Photo URL <span class="optional">(Don't have one? Contact the Marketing team)</span></label>
-      <input type="url" id="photoUrl" placeholder="https://..." oninput="updatePreview()" />
-    </div>
-
-    <div class="field hidden" id="linkedinField">
-      <label for="linkedinUrl">LinkedIn profile URL</label>
-      <input type="url" id="linkedinUrl" placeholder="https://www.linkedin.com/in/yourname" oninput="updatePreview()" />
-    </div>
-
-    <div class="field hidden" id="bookacallField">
-      <label for="bookacallUrl">Book a call link <span class="optional">(e.g. your Calendly URL)</span></label>
-      <input type="url" id="bookacallUrl" placeholder="https://calendly.com/..." oninput="updatePreview()" />
-    </div>
-
-    <div class="field">
-      <label for="partTime">Do you work part-time?</label>
-      <select id="partTime" onchange="onPartTimeChange()">
-        <option value="">— Please select —</option>
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
+      <label for="team">Team</label>
+      <select id="team" onchange="onTeamChange()">
+        <option value="">— Select your team —</option>
+        <option>Sales</option>
+        <option>Customer Success</option>
+        <option>Managed Listings</option>
+        <option>Local SEO Services</option>
+        <option>Support (with photo)</option>
+        <option>Support (without photo)</option>
+        <option>Marketing</option>
+        <option>People</option>
+        <option>Finance</option>
+        <option>Rev Ops</option>
+        <option>Dev Ops</option>
+        <option>Product</option>
+        <option>SLT</option>
       </select>
     </div>
 
-    <div class="field hidden" id="workingDaysField">
-      <label for="workingDays">Working days <span class="optional" id="charCount">(60 characters remaining)</span></label>
-      <input type="text" id="workingDays" maxlength="60" placeholder="e.g. My working days are Monday – Thursday" oninput="onWorkingDaysInput()" />
+    <div id="fields" class="hidden">
+      <div class="divider"></div>
+
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" placeholder="Globey Globerson" oninput="updatePreview()" />
+      </div>
+
+      <div class="field">
+        <label for="pronouns">Pronouns <span class="optional">(optional)</span></label>
+        <input type="text" id="pronouns" placeholder="They/Them" oninput="updatePreview()" />
+      </div>
+
+      <div class="field">
+        <label for="jobTitle">Job title</label>
+        <input type="text" id="jobTitle" placeholder="Company Mascot" oninput="updatePreview()" />
+      </div>
+
+      <div class="field hidden" id="photoField">
+        <label for="photoUrl">Photo URL <span class="optional">(Don't have one? Contact the Marketing team)</span></label>
+        <input type="url" id="photoUrl" placeholder="https://..." oninput="updatePreview()" />
+      </div>
+
+      <div class="field hidden" id="linkedinField">
+        <label for="linkedinUrl">LinkedIn profile URL</label>
+        <input type="url" id="linkedinUrl" placeholder="https://www.linkedin.com/in/yourname" oninput="updatePreview()" />
+      </div>
+
+      <div class="field hidden" id="bookacallField">
+        <label for="bookacallUrl">Book a call link <span class="optional">(e.g. your Calendly URL)</span></label>
+        <input type="url" id="bookacallUrl" placeholder="https://calendly.com/..." oninput="updatePreview()" />
+      </div>
+
+      <div class="field">
+        <label for="partTime">Do you work part-time?</label>
+        <select id="partTime" onchange="onPartTimeChange()">
+          <option value="">— Please select —</option>
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+
+      <div class="field hidden" id="workingDaysField">
+        <label for="workingDays">Working days <span class="optional" id="charCount">(60 characters remaining)</span></label>
+        <input type="text" id="workingDays" maxlength="60" placeholder="e.g. My working days are Monday – Thursday" oninput="onWorkingDaysInput()" />
+      </div>
+    </div>
+
+    <div id="previewSection" class="hidden">
+      <div class="divider"></div>
+      <div class="preview-header">
+        <span class="preview-label">Your signature</span>
+        <button class="copy-btn" id="copyBtn" onclick="copySignature()">Copy signature</button>
+      </div>
+      <div class="preview-box">
+        <div id="preview"></div>
+      </div>
+
     </div>
   </div>
 
-  <div id="previewSection" class="hidden">
-    <div class="divider"></div>
-    <div class="preview-header">
-      <p>Your signature</p>
-      <button id="copyBtn" onclick="copySignature()">Copy signature</button>
-    </div>
-    <div class="preview-box">
-      <div id="preview"></div>
-    </div>
-    <p class="hint">Click "Copy signature", then paste directly into the Gmail signature editor.</p>
+  <div class="right">
+    <h2>How to add your signature in Gmail</h2>
+    <div class="step"><div class="step-num">1</div><div class="step-content"><p>Fill in your details on the left and click <strong>Copy signature</strong>.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-content"><p>Open <strong>Gmail</strong> and click the ⚙️ <strong>Settings gear</strong> in the top right corner.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-content"><p>Click <strong>See all settings</strong>.</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-content"><p>Scroll down to the <strong>Signature</strong> section and click <strong>Create new</strong>.</p></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-content"><p>Give your signature a name — e.g. <strong>BrightLocal</strong> — and click <strong>Create</strong>.</p></div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-content"><p>Click into the signature editor and <strong>paste</strong> your signature (Ctrl+V / Cmd+V).</p></div></div>
+    <div class="step"><div class="step-num">7</div><div class="step-content"><p>Under <strong>Signature defaults</strong>, set it as the default for new emails and replies.</p></div></div>
+    <div class="step"><div class="step-num">8</div><div class="step-content"><p>Scroll to the bottom and click <strong>Save changes</strong>.</p></div></div>
+    <div class="tip"><p><strong>Need help?</strong> Contact the Marketing team if you don't have a photo URL or run into any issues.</p></div>
   </div>
-
-</div>
 
 <script>
-  const LOGO   = "https://144008104.fs1.hubspotusercontent-eu1.net/hubfs/144008104/Email%20Assets/Signatures/Logo-tagline-3B.png";
-  const STAR   = "https://144008104.fs1.hubspotusercontent-eu1.net/hubfs/144008104/Email%20Assets/Signatures/starburst_motif_point.png";
-  const GENERIC= "https://144008104.fs1.hubspotusercontent-eu1.net/hubfs/144008104/Email%20Assets/Signatures/Globey_profile_pic.png";
+  const LOGO = "https://144008104.fs1.hubspotusercontent-eu1.net/hubfs/144008104/Email%20Assets/Signatures/Logo-tagline-3B.png";
+  const STAR = "https://144008104.fs1.hubspotusercontent-eu1.net/hubfs/144008104/Email%20Assets/Signatures/starburst_motif_point.png";
+  const GENERIC = "https://144008104.fs1.hubspotusercontent-eu1.net/hubfs/144008104/Email%20Assets/Signatures/Globey_profile_pic.png";
   const GLOBEY_LI = "https://144008104.fs1.hubspotusercontent-eu1.net/hubfs/144008104/Email%20Assets/Signatures/Email-sig-PP-globey-LI.png";
 
   const LINKS = {
@@ -144,6 +162,7 @@
     "Finance":                 { hasPhoto: false, hasLinkedIn: false, noLinks: true,  links: [],                        partTimeLinks: [] },
     "Rev Ops":                 { hasPhoto: false, hasLinkedIn: false, noLinks: true,  links: [],                        partTimeLinks: [] },
     "Dev Ops":                 { hasPhoto: false, hasLinkedIn: false, noLinks: true,  links: [],                        partTimeLinks: [] },
+    "Product":                 { hasPhoto: false, hasLinkedIn: false, noLinks: true,  links: [],                        partTimeLinks: [] },
     "SLT":                     { hasPhoto: false, hasLinkedIn: false, noLinks: true,  links: [],                        partTimeLinks: [] },
   };
 
@@ -152,16 +171,14 @@
     document.getElementById("partTime").value = "";
     document.getElementById("workingDays").value = "";
     document.getElementById("workingDaysField").classList.add("hidden");
-
     if (!team) {
       document.getElementById("fields").classList.add("hidden");
       document.getElementById("previewSection").classList.add("hidden");
       return;
     }
-
     const cfg = TEAMS[team];
     document.getElementById("fields").classList.remove("hidden");
-    toggle("photoField",    cfg.hasPhoto);
+    toggle("photoField", cfg.hasPhoto);
     toggle("linkedinField", cfg.hasLinkedIn);
     toggle("bookacallField", cfg.links.includes("bookacall") || cfg.partTimeLinks.includes("bookacall"));
     updatePreview();
@@ -188,26 +205,20 @@
     const team = document.getElementById("team").value;
     if (!team) return;
     const cfg = TEAMS[team];
-
-    const name       = document.getElementById("name").value.trim();
-    const pronouns   = document.getElementById("pronouns").value.trim();
-    const jobTitle   = document.getElementById("jobTitle").value.trim();
-    const photoUrl   = document.getElementById("photoUrl").value.trim();
-    const linkedinUrl= document.getElementById("linkedinUrl").value.trim();
-    const bookacallUrl= document.getElementById("bookacallUrl").value.trim();
-    const isPartTime = document.getElementById("partTime").value === "yes";
-    const workingDays= isPartTime ? document.getElementById("workingDays").value.trim() : "";
-
-    if (!name || !jobTitle) {
-      document.getElementById("previewSection").classList.add("hidden");
-      return;
-    }
-
+    const name         = document.getElementById("name").value.trim();
+    const pronouns     = document.getElementById("pronouns").value.trim();
+    const jobTitle     = document.getElementById("jobTitle").value.trim();
+    const photoUrl     = document.getElementById("photoUrl").value.trim();
+    const linkedinUrl  = document.getElementById("linkedinUrl").value.trim();
+    const bookacallUrl = document.getElementById("bookacallUrl").value.trim();
+    const isPartTime   = document.getElementById("partTime").value === "yes";
+    const workingDays  = isPartTime ? document.getElementById("workingDays").value.trim() : "";
+    if (!name || !jobTitle) { document.getElementById("previewSection").classList.add("hidden"); return; }
     document.getElementById("previewSection").classList.remove("hidden");
-    document.getElementById("preview").innerHTML = buildSignature({ team, cfg, name, pronouns, jobTitle, photoUrl, linkedinUrl, bookacallUrl, isPartTime, workingDays });
+    document.getElementById("preview").innerHTML = buildSignature({ cfg, name, pronouns, jobTitle, photoUrl, linkedinUrl, bookacallUrl, isPartTime, workingDays });
   }
 
-  function buildSignature({ team, cfg, name, pronouns, jobTitle, photoUrl, linkedinUrl, bookacallUrl, isPartTime, workingDays }) {
+  function buildSignature({ cfg, name, pronouns, jobTitle, photoUrl, linkedinUrl, bookacallUrl, isPartTime, workingDays }) {
     const photoSrc = cfg.hasPhoto ? (photoUrl || GLOBEY_LI) : GENERIC;
     const displayName = pronouns ? `${name} <span style="font-weight:normal;">(${pronouns})</span>` : name;
     const activeLinks = isPartTime ? cfg.partTimeLinks : cfg.links;
@@ -215,58 +226,24 @@
     const linkRows = activeLinks.map(key => {
       const link = LINKS[key];
       const href = key === "bookacall" ? (bookacallUrl || "#") : link.url;
-      return `<tr><td style="padding:0 0 6px 0;line-height:1.2;">
-        <img src="${STAR}" alt="*" width="14" height="14" style="display:inline-block;vertical-align:middle;margin-right:4px;border:0;" />
-        <a href="${href}" target="_blank" style="color:#1a1a1a;font-size:13px;font-weight:normal;text-decoration:underline;vertical-align:middle;">${link.label}</a>
-      </td></tr>`;
+      return `<tr><td style="padding:0 0 6px 0;line-height:1.2;"><img src="${STAR}" alt="*" width="14" height="14" style="display:inline-block;vertical-align:middle;margin-right:4px;border:0;" /><a href="${href}" target="_blank" style="color:#1a1a1a;font-size:13px;font-weight:normal;text-decoration:underline;vertical-align:middle;">${link.label}</a></td></tr>`;
     }).join("");
 
     const workingDaysRow = workingDays ? `<tr><td style="padding:0 0 8px 0;font-size:12px;color:#444;line-height:1.2;font-style:italic;">${workingDays}</td></tr>` : "";
-
     const logoImg = `<img src="${LOGO}" alt="BrightLocal - Get Found and Grow" height="42" width="284" style="display:block;border:0;height:42px;width:284px;" />`;
 
     const photoCell = cfg.hasPhoto
-      ? `<td style="vertical-align:top;padding:0 16px 0 0;width:90px;">
-          <a href="${linkedinUrl || '#'}" target="_blank" style="display:block;width:90px;line-height:0;">
-            <img src="${photoSrc}" alt="Profile photo" width="90" height="90" style="display:block;border:0;" />
-          </a>
-        </td>`
-      : `<td style="vertical-align:top;padding:0 16px 0 0;width:90px;">
-          <img src="${GENERIC}" alt="Profile photo" width="90" height="90" style="display:block;border:0;" />
-        </td>`;
+      ? `<td style="vertical-align:top;padding:0 16px 0 0;width:90px;"><a href="${linkedinUrl || '#'}" target="_blank" style="display:block;width:90px;line-height:0;"><img src="${photoSrc}" alt="Profile photo" width="90" height="90" style="display:block;border:0;" /></a></td>`
+      : `<td style="vertical-align:top;padding:0 16px 0 0;width:90px;"><img src="${GENERIC}" alt="Profile photo" width="90" height="90" style="display:block;border:0;" /></td>`;
 
     if (cfg.noLinks) {
-      return `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:520px;">
-        <tr>
-          ${photoCell}
-          <td style="vertical-align:top;padding:0;">
-            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-              <tr><td style="padding:0 0 3px 0;font-size:15px;font-weight:bold;color:#1a1a1a;line-height:1.2;">${displayName}</td></tr>
-              <tr><td style="padding:0 0 ${workingDays ? '4px' : '10px'} 0;font-size:13px;color:#444;line-height:1.2;">${jobTitle}</td></tr>
-              ${workingDaysRow}
-              <tr><td style="padding:0;">${logoImg}</td></tr>
-            </table>
-          </td>
-        </tr>
-      </table>`;
+      const smallPhotoCell = cfg.hasPhoto
+        ? `<td style="vertical-align:top;padding:0 16px 0 0;width:75px;"><a href="${linkedinUrl || '#'}" target="_blank" style="display:block;width:75px;line-height:0;"><img src="${photoSrc}" alt="Profile photo" width="75" height="75" style="display:block;border:0;" /></a></td>`
+        : `<td style="vertical-align:top;padding:0 16px 0 0;width:75px;"><img src="${GENERIC}" alt="Profile photo" width="75" height="75" style="display:block;border:0;" /></td>`;
+      return `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:520px;"><tr>${smallPhotoCell}<td style="vertical-align:top;padding:0;"><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr><td style="padding:0 0 3px 0;font-size:15px;font-weight:bold;color:#1a1a1a;line-height:1.2;">${displayName}</td></tr><tr><td style="padding:0 0 ${workingDays ? '4px' : '10px'} 0;font-size:13px;color:#444;line-height:1.2;">${jobTitle}</td></tr>${workingDaysRow}<tr><td style="padding:0;">${logoImg}</td></tr></table></td></tr></table>`;
     }
 
-    return `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:520px;">
-      <tr>
-        ${photoCell}
-        <td style="vertical-align:top;padding:0;">
-          <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-            <tr><td style="padding:0 0 3px 0;font-size:15px;font-weight:bold;color:#1a1a1a;line-height:1.2;">${displayName}</td></tr>
-            <tr><td style="padding:0 0 ${workingDays ? '4px' : '10px'} 0;font-size:13px;color:#444;line-height:1.2;">${jobTitle}</td></tr>
-            ${workingDaysRow}
-            ${linkRows}
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2" style="padding:10px 0 0 0;">${logoImg}</td>
-      </tr>
-    </table>`;
+    return `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:520px;"><tr>${photoCell}<td style="vertical-align:top;padding:0;"><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr><td style="padding:0 0 3px 0;font-size:15px;font-weight:bold;color:#1a1a1a;line-height:1.2;">${displayName}</td></tr><tr><td style="padding:0 0 ${workingDays ? '4px' : '10px'} 0;font-size:13px;color:#444;line-height:1.2;">${jobTitle}</td></tr>${workingDaysRow}${linkRows}</table></td></tr><tr><td colspan="2" style="padding:10px 0 0 0;">${logoImg}</td></tr></table>`;
   }
 
   function copySignature() {
